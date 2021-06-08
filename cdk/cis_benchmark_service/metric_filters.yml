@@ -1,0 +1,114 @@
+---
+
+- id: CwMFRootLogin
+  description: A CloudWatch Alarm that triggers if a root user uses the account.
+  filter_pattern: >-
+    { $.userIdentity.type="Root" && $.userIdentity.invokedBy NOT EXISTS && $.eventType !="AwsServiceEvent" }
+  metric_name: RootUserEventCount
+- id: CwMFUnauthorizedAPICalls
+  description: >-
+    A CloudWatch Alarm that triggers if Multiple unauthorized actions or
+    logins attempted.
+  filter_pattern: >-
+    { ($.errorCode = "*UnauthorizedOperation") || ($.errorCode = "AccessDenied*")}
+  metric_name: UnauthorizedAttemptCount
+- id: CwMFNoMFAConsoleLogins
+  description: >-
+    A CloudWatch Alarm that triggers if there is a Management Console sign-in
+    without MFA.
+  filter_pattern: >-
+    { ($.eventName="ConsoleLogin") && ($.additionalEventData.MFAUsed !="Yes") }
+  metric_name: ConsoleSigninWithoutMFA
+- id: CwMFIAMPolicyChanges
+  description: >-
+    A CloudWatch Alarm that triggers when changes are made to IAM policies.
+    Events include IAM policy creation/deletion/update operations as well as attaching/detaching
+    policies from IAM users, roles or groups.
+  filter_pattern: >-
+    { ($.eventName=DeleteGroupPolicy) || ($.eventName=DeleteRolePolicy)
+    || ($.eventName=DeleteUserPolicy) || ($.eventName=PutGroupPolicy) || ($.eventName=PutRolePolicy)
+    || ($.eventName=PutUserPolicy) || ($.eventName=CreatePolicy) || ($.eventName=DeletePolicy)
+    || ($.eventName=CreatePolicyVersion) || ($.eventName=DeletePolicyVersion) || ($.eventName=AttachRolePolicy)
+    || ($.eventName=DetachRolePolicy) || ($.eventName=AttachUserPolicy) ||
+    ($.eventName=DetachUserPolicy) || ($.eventName=AttachGroupPolicy) || ($.eventName=DetachGroupPolicy) }
+  metric_name: IAMPolicyEventCount
+- id: CwMFCloudTrailChanges
+  description: A CloudWatch Alarm that triggers when changes are made to CloudTrail.
+  filter_pattern: >-
+    { ($.eventName = CreateTrail) || ($.eventName = UpdateTrail) ||
+    ($.eventName = DeleteTrail) || ($.eventName = StartLogging) || ($.eventName =
+    StopLogging) }
+  metric_name: CloudTrailEventCount
+- id: CwMFFailedConsoleLogins
+  description: >-
+    A CloudWatch Alarm that triggers if there are AWS Management Console
+    authentication failures.
+  filter_pattern: >-
+    { ($.eventName = ConsoleLogin) && ($.errorMessage = "Failed authentication") }
+  metric_name: ConsoleLoginFailures
+- id: CwMFDisabledDeletedCMKS
+  description: >-
+    A CloudWatch Alarm that triggers if customer created CMKs get disabled
+    or scheduled for deletion.
+  filter_pattern: >-
+    { ($.eventSource = kms.amazonaws.com) &&  (($.eventName=DisableKey)
+    || ($.eventName=ScheduleKeyDeletion)) }
+  metric_name: KMSCustomerKeyDeletion
+- id: CwMFS3Changes
+  description: A CloudWatch Alarm that triggers when changes are made to an S3 Bucket.
+  filter_pattern: >-
+    { ($.eventSource = s3.amazonaws.com) && (($.eventName = PutBucketAcl)
+    || ($.eventName = PutBucketPolicy) || ($.eventName = PutBucketCors) || ($.eventName
+    = PutBucketLifecycle) || ($.eventName = PutBucketReplication) || ($.eventName
+    = DeleteBucketPolicy) || ($.eventName = DeleteBucketCors) || ($.eventName = DeleteBucketLifecycle)
+    || ($.eventName = DeleteBucketReplication)) }
+  metric_name: S3BucketActivityEventCount
+- id: CwMFConfigChanges
+  description: A CloudWatch Alarm that triggers when changes are made to AWS Config.
+  filter_pattern: >-
+    { ($.eventSource=config.amazonaws.com) && (($.eventName=StopConfigurationRecorder)
+    || ($.eventName=DeleteDeliveryChannel) || ($.eventName=PutDeliveryChannel) ||
+    ($.eventName=PutConfigurationRecorder)) }
+  metric_name: IAMPolicyEventCount
+- id: CwAlarmSGChanges
+  description: A CloudWatch Alarm that triggers when changes are made to Security
+    Groups.
+  filter_pattern: >-
+    { ($.eventName = AuthorizeSecurityGroupIngress) || ($.eventName
+    = AuthorizeSecurityGroupEgress) || ($.eventName = RevokeSecurityGroupIngress)
+    || ($.eventName = RevokeSecurityGroupEgress) || ($.eventName = CreateSecurityGroup)
+    || ($.eventName = DeleteSecurityGroup) }
+  metric_name: SecurityGroupEventCount
+- id: CwMFNACLChanges
+  description: A CloudWatch Alarm that triggers when changes are made to Network ACLs.
+  filter_pattern: >-
+    { ($.eventName = CreateNetworkAcl) || ($.eventName = CreateNetworkAclEntry)
+    || ($.eventName = DeleteNetworkAcl) || ($.eventName = DeleteNetworkAclEntry) ||
+    ($.eventName = ReplaceNetworkAclEntry) || ($.eventName = ReplaceNetworkAclAssociation) }
+  metric_name: NetworkAclEventCount
+- id: CwMFIGWChanges
+  description: A CloudWatch Alarm that triggers when changes are made to an Internet
+    Gateway in a VPC.
+  filter_pattern: >-
+    { ($.eventName = CreateCustomerGateway) || ($.eventName = DeleteCustomerGateway)
+    || ($.eventName = AttachInternetGateway) || ($.eventName = CreateInternetGateway)
+    || ($.eventName = DeleteInternetGateway) || ($.eventName = DetachInternetGateway) }
+  metric_name: GatewayEventCount
+- id: CwMFVPCRouteTableChanges
+  description: A CloudWatch Alarm that triggers when changes are made to a VPC's Route
+    Table.
+  filter_pattern: >-
+    { ($.eventName=CreateRoute) || ($.eventName=CreateRouteTable) ||
+    ($.eventName=ReplaceRoute) || ($.eventName=ReplaceRouteTableAssociation) || ($.eventName=DeleteRouteTable)
+    || ($.eventName=DeleteRoute) || ($.eventName=DisassociateRouteTable) }
+  metric_name: VpcRouteTableEventCount
+- id: CwMFVPCChanges
+  description: A CloudWatch Alarm that triggers when changes are made to a VPC.
+  filter_pattern: >-
+    { ($.eventName = CreateVpc) || ($.eventName = DeleteVpc) || ($.eventName
+    = ModifyVpcAttribute) || ($.eventName = AcceptVpcPeeringConnection) || ($.eventName
+    = CreateVpcPeeringConnection) || ($.eventName = DeleteVpcPeeringConnection) ||
+    ($.eventName = RejectVpcPeeringConnection) || ($.eventName = AttachClassicLinkVpc)
+    || ($.eventName = DetachClassicLinkVpc) || ($.eventName = DisableVpcClassicLink)
+    || ($.eventName = EnableVpcClassicLink) }
+  metric_name: VpcEventCount

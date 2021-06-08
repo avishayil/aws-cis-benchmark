@@ -1,0 +1,18 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+cis-benchmark-service-cdk = {editable = true,path = "cdk"}
+yamllint = "*"
+cfn-lint = "*"
+
+[packages]
+boto3 = "*"
+dictdiffer = "*"
+mypy_boto3 = "*"
+boto3_type_annotations = "*"
+
+[requires]
+python_version = "3"
